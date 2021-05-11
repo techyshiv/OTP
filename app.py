@@ -1,7 +1,9 @@
 from flask import Flask,request,session
 from twilio.rest import Client
 import random
-import settings
+import os
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = "OTP"
 @app.route("/")
@@ -32,8 +34,8 @@ def generateOTP():
     return random.randrange(1000,9999)
 def getotpAPi(number):
     # print("Receive Number = ",number)
-    acc_sid = settings.ACC_SID
-    auth_token = settings.ACC_AUTH_TOKEN
+    acc_sid = os.getenv('ACC_SID')
+    auth_token = os.getenv('ACC_AUTH_TOKEN')
     client = Client(acc_sid,auth_token)
     otp = generateOTP()
     session['response'] = str(otp)
