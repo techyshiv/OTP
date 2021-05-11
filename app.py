@@ -1,20 +1,20 @@
 from flask import Flask,request,session
 from twilio.rest import Client
 import random
-import os
-from dotenv import load_dotenv
-load_dotenv()
 app = Flask(__name__)
 app.secret_key = "OTP"
 @app.route("/")
 def index():
     return "Hello World"
-@app.route("/getotp",methods=["POST","GET"])
-def getotp():
+
+@app.route('/product/<id>/<token>')
+def get_product(id,token):
+  return "The product is " + str(id)
+
+@app.route("/getotp/<id>/<token>",methods=["POST","GET"])
+def getotp(id,token):
     number = request.form["number"]
-    # print("Number = ",number)
-    print(type(number))
-    val = getotpAPi(number)
+    val = getotpAPi(number,str(id),str(token))
     if val == "True":
         return val
 
@@ -32,10 +32,10 @@ def validate():
         return "Session Expires"
 def generateOTP():
     return random.randrange(1000,9999)
-def getotpAPi(number):
+def getotpAPi(number,ids,token):
     # print("Receive Number = ",number)
-    acc_sid = os.getenv('ACC_SID')
-    auth_token = os.getenv('ACC_AUTH_TOKEN')
+    acc_sid = ids
+    auth_token = token
     client = Client(acc_sid,auth_token)
     otp = generateOTP()
     session['response'] = str(otp)
